@@ -1,0 +1,23 @@
+{
+    "name": "alzo02/laravel-dotpay",
+    "description": "Laravel 5 Dotpay",
+    "authors": [
+        {
+            "name": "Alzo02",
+            "email": "alzo02@icloud.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.5.9",
+        "illuminate/support": "5.0.x|5.1.x|5.2.x"
+    },
+    "autoload": {
+      "psr-4": {
+        "Alzo\\LaravelDotpay\\": "src/"
+      }
+    },
+
+    "require-dev": {
+        "phpunit/phpunit": "^5.5"
+    }
+}
