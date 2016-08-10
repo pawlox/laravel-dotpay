@@ -16,3 +16,4 @@ bootstrap/cache/
 composer.lock
 .idea/
 _ide_helper.php
+_test_app

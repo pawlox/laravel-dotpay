@@ -4,7 +4,6 @@ namespace Alzo\Dotpay;
 
 use Alzo\LaravelDotpay\LaravelDotpay;
 use Illuminate\Routing\Router;
-use Illuminate\Session\SessionManager;
 
 class ServiceProvider extends \Illuminate\Support\ServiceProvider
 {
