@@ -16,7 +16,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
         $this->mergeConfigFrom($configPath, 'dotpay');
 
         $this->app->bind('dotpay', function ($app) {
-            return new LaravelDotpay();
+            return new LaravelDotpay($app);
         });
 
         $this->app->alias('dotpay', 'Alzo\LaravelDotpay\LaravelDotpay');

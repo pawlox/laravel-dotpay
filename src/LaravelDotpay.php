@@ -2,10 +2,6 @@
 
 namespace Alzo\LaravelDotpay;
 
-use Closure;
-use Config;
-use Log;
-
 final class LaravelDotpay
 {
     const PAYMENT_BUTTON_BACK_TYPE = 0;
@@ -48,10 +44,11 @@ final class LaravelDotpay
 
     /**
      * LaravelDotpay constructor.
+     * @param $app
      */
-    function __construct()
+    function __construct($app)
     {
-        $this->config = Config::get('dotpay');
+        $this->config = $app->config['dotpay'];
         $this->allowed_servers = $this->config['allowed_servers'];
 
         $this->successCallback = function () {};
@@ -82,8 +79,8 @@ final class LaravelDotpay
         $notificationURL = \URL::route($this->config['notification_url']);
 
         $formStart = '<form class="dotpay-form" action="' . $this->formUrl . '" method="POST>';
-        $inputTemplate  = '<input type="hidden" name="[name]" value="[value]"/>';
-        $formEnd   = '</form>';
+        $inputTemplate = '<input type="hidden" name="[name]" value="[value]"/>';
+        $formEnd = '</form>';
 
         $formData = [
             'id'                => $this->config['seller_id'],
@@ -174,13 +171,6 @@ final class LaravelDotpay
         $hash = hash('sha256', $this->config['PIN'] . $concatData);
         $signature = $data['signature'];
 
-        if ($this->debug) {
-            Log::debug("Validation Data: " . json_encode($data, JSON_PRETTY_PRINT));
-            Log::debug("HASH: " . $hash);
-            Log::debug("SIGNATURE: " . $signature);
-            Log::debug("RESULT: " . $hash === $signature ? "TRUE" : "FALSE");
-        }
-
         $result = $hash === $signature;
 
         if ($result) {
@@ -193,17 +183,17 @@ final class LaravelDotpay
     }
 
     /**
-     * @param Closure $callback
+     * @param \Closure $callback
      */
-    public function success(Closure $callback)
+    public function success(\Closure $callback)
     {
         $this->successCallback = $callback;
     }
 
     /**
-     * @param Closure $callback
+     * @param \Closure $callback
      */
-    public function failed(Closure $callback)
+    public function failed(\Closure $callback)
     {
         $this->failedCallback = $callback;
     }
@@ -214,7 +204,7 @@ final class LaravelDotpay
      */
     public function callSuccess($data)
     {
-        if ($this->successCallback instanceof Closure) {
+        if ($this->successCallback instanceof \Closure) {
             $this->successCallback->__invoke($data);
         }
     }
@@ -225,7 +215,7 @@ final class LaravelDotpay
      */
     public function callFailed($data)
     {
-        if ($this->failedCallback instanceof Closure) {
+        if ($this->failedCallback instanceof \Closure) {
             $this->failedCallback->__invoke($data);
         }
     }
