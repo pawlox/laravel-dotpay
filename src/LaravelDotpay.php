@@ -197,9 +197,9 @@ final class LaravelDotpay
         }
 
         $hash = hash('sha256', $this->config['PIN'] . $concatData);
-        $signature = $data['signature'];
+        $signature = isset($data['signature']) ? $data['signature'] : null;
 
-        $result = $hash === $signature;
+        $result = isset($data['signature']) && ($hash === $signature);
 
         if ($result) {
             $this->callSuccess($data);
