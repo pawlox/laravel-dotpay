@@ -48,7 +48,7 @@ final class LaravelDotpay
      */
     function __construct($app)
     {
-        $this->config = $app->config['dotpay'];
+        $this->config = $app['config']->get('dotpay');
         $this->allowed_servers = $this->config['allowed_servers'];
 
         $this->successCallback = function () {};
