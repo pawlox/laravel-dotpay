@@ -85,27 +85,6 @@ final class LaravelDotpay
         $inputTemplate = '<input type="hidden" name="[name]" value="[value]"/>';
         $formEnd = '</form>';
 
-        $required = [
-            'seller_id',
-            'description',
-            'channel',
-            'control',
-            'amount',
-            'firstname',
-            'lastname',
-            'email',
-            'seller_email',
-            'seller_info',
-        ];
-
-        foreach ($required as $item) {
-            if (false == isset($data[$item]) || strlen($data[$item]) == 0) {
-                throw new EmptyFieldException(
-                    sprintf("Filed `%s` is required. Empty given", $item)
-                );
-            }
-        }
-
         $formData = [
             'id'                => $this->config['seller_id'],
             'description'       => $data['description'],
@@ -128,6 +107,27 @@ final class LaravelDotpay
         if ($formData['type'] == self::PAYMENT_REDIRECT_TYPE) {
             $formData['bylaw'] = 1;
             $formData['personal_data'] = 1;
+        }
+
+        $required = [
+            'seller_id',
+            'description',
+            'channel',
+            'control',
+            'amount',
+            'firstname',
+            'lastname',
+            'email',
+            'seller_email',
+            'seller_info',
+        ];
+
+        foreach ($required as $item) {
+            if (false == isset($formData[$item]) || strlen($formData[$item]) == 0) {
+                throw new EmptyFieldException(
+                    sprintf("Filed `%s` is required. Empty given", $item)
+                );
+            }
         }
 
         $form = $formStart . "\n";
