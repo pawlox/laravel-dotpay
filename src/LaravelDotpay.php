@@ -2,6 +2,8 @@
 
 namespace Alzo\LaravelDotpay;
 
+use Alzo\LaravelDotpay\Exception\EmptyFieldException;
+
 final class LaravelDotpay
 {
     const PAYMENT_BUTTON_BACK_TYPE = 0;
@@ -70,8 +72,9 @@ final class LaravelDotpay
 
     /**
      * @param null $data
-     *
      * @return string
+     *
+     * @throws \Exception
      */
     public function createForm($data = null)
     {
@@ -82,9 +85,31 @@ final class LaravelDotpay
         $inputTemplate = '<input type="hidden" name="[name]" value="[value]"/>';
         $formEnd = '</form>';
 
+        $required = [
+            'seller_id',
+            'description',
+            'channel',
+            'control',
+            'amount',
+            'firstname',
+            'lastname',
+            'email',
+            'seller_email',
+            'seller_info',
+        ];
+
+        foreach ($required as $item) {
+            if (false == isset($data[$item]) || strlen($data[$item]) == 0) {
+                throw new EmptyFieldException(
+                    sprintf("Filed `%s` is required. Empty given", $item)
+                );
+            }
+        }
+
         $formData = [
             'id'                => $this->config['seller_id'],
             'description'       => $data['description'],
+            'channel'           => $data['channel'],
             'api_version'       => isset($data['api_version']) ? $data['api_version'] : "dev",
             'lang'              => isset($data['lang']) ? $data['lang'] : "pl",
             'control'           => isset($data['control']) ? $data['control'] : null,
