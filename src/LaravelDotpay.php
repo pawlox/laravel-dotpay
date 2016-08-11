@@ -78,7 +78,7 @@ final class LaravelDotpay
         $successUrl      = \URL::route($this->config['success_url']);
         $notificationURL = \URL::route($this->config['notification_url']);
 
-        $formStart = '<form class="dotpay-form" action="' . $this->formUrl . '" method="POST>';
+        $formStart = '<form class="dotpay-form" action="' . $this->formUrl . '" method="POST">';
         $inputTemplate = '<input type="hidden" name="[name]" value="[value]"/>';
         $formEnd = '</form>';
 
