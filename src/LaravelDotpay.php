@@ -87,8 +87,8 @@ final class LaravelDotpay
 
         $formData = [
             'id'                => $this->config['seller_id'],
-            'description'       => $data['description'],
-            'channel'           => $data['channel'],
+            'description'       => isset($data['description']) ? $data['description'] : null,
+            'channel'           => isset($data['channel']) ? $data['channel'] : null,
             'api_version'       => isset($data['api_version']) ? $data['api_version'] : "dev",
             'lang'              => isset($data['lang']) ? $data['lang'] : "pl",
             'control'           => isset($data['control']) ? $data['control'] : null,
@@ -110,16 +110,15 @@ final class LaravelDotpay
         }
 
         $required = [
-            'seller_id',
+            'id',
             'description',
-            'channel',
             'control',
             'amount',
             'firstname',
             'lastname',
             'email',
-            'seller_email',
-            'seller_info',
+            'p_email',
+            'p_info',
         ];
 
         foreach ($required as $item) {
