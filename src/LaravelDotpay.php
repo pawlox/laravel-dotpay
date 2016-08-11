@@ -135,6 +135,10 @@ final class LaravelDotpay
             $form .= str_replace(['[name]', '[value]'], [$key, $val], $inputTemplate) . "\n";
         }
 
+        if (isset($data['button']) && $data['button']) {
+            $form .= '<button class="dotpay-from-submit" type="submit">' . $data['button'] . '</button>';
+        }
+
         $form .= $formEnd . "\n";
 
         return $form;
@@ -226,7 +230,7 @@ final class LaravelDotpay
      * Dotpay URL request data
      * @param $data
      */
-    public function callSuccess($data)
+    private function callSuccess($data)
     {
         if ($this->successCallback instanceof \Closure) {
             $this->successCallback->__invoke($data);
@@ -237,7 +241,7 @@ final class LaravelDotpay
      * Dotpay URL request data
      * @param $data
      */
-    public function callFailed($data)
+    private function callFailed($data)
     {
         if ($this->failedCallback instanceof \Closure) {
             $this->failedCallback->__invoke($data);
