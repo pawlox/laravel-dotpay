@@ -1,9 +1,7 @@
 <?php
 
-namespace Alzo\Dotpay;
+namespace Alzo\LaravelDotpay;
 
-use Alzo\LaravelDotpay\LaravelDotpay;
-use Illuminate\Routing\Router;
 
 class ServiceProvider extends \Illuminate\Support\ServiceProvider
 {
@@ -14,13 +12,34 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
      */
     public function register()
     {
-        $configPath = __DIR__ . '/../config/laravel-dotpay.php';
-        $this->mergeConfigFrom($configPath, 'laravel-dotpay');
+        $configPath = __DIR__ . '/../config/dotpay.php';
+        $this->mergeConfigFrom($configPath, 'dotpay');
 
-        $this->app->singleton('laravel-dotpay', function ($app) {
+        $this->app->bind('dotpay', function ($app) {
             return new LaravelDotpay();
         });
 
-        $this->app->alias('laravel-dotpay', 'Alzo\LaravelDotpay\LaravelDotpay');
+        $this->app->alias('dotpay', 'Alzo\LaravelDotpay\LaravelDotpay');
+        $this->publishes([$configPath => $this->getConfigPath()], 'config');
+    }
+
+    /**
+     * Get the config path
+     *
+     * @return string
+     */
+    protected function getConfigPath()
+    {
+        return config_path('dotpay.php');
+    }
+
+    /**
+     * Get the services provided by the provider.
+     *
+     * @return array
+     */
+    public function provides()
+    {
+        return array('dotpay');
     }
 }
