@@ -19,7 +19,8 @@
 
     "extra": {
       "branch-alias": {
-        "dev-master": "0.0.*-dev"
+        "dev-master": "v0.0.*-dev",
+        "stable": "v0.0.1"
       }
     },
 
