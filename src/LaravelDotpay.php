@@ -3,6 +3,8 @@
 namespace Alzo\LaravelDotpay;
 
 use Alzo\LaravelDotpay\Exception\EmptyFieldException;
+use URL;
+use Log;
 
 final class LaravelDotpay
 {
@@ -78,8 +80,8 @@ final class LaravelDotpay
      */
     public function createForm($data = null)
     {
-        $successUrl      = \URL::route($this->config['success_url']);
-        $notificationURL = \URL::route($this->config['notification_url']);
+        $successUrl      = URL::route($this->config['success_url']);
+        $notificationURL = URL::route($this->config['notification_url']);
 
         $formStart = '<form class="dotpay-form" action="' . $this->formUrl . '" method="POST">';
         $inputTemplate = '<input type="hidden" name="[name]" value="[value]"/>';
@@ -129,17 +131,17 @@ final class LaravelDotpay
             }
         }
 
-        $form = $formStart . "\n";
+        $form = $formStart . PHP_EOL;
 
         foreach ($formData as $key => $val) {
-            $form .= str_replace(['[name]', '[value]'], [$key, $val], $inputTemplate) . "\n";
+            $form .= str_replace(['[name]', '[value]'], [$key, $val], $inputTemplate) .PHP_EOL;
         }
 
         if (isset($data['button']) && $data['button']) {
             $form .= '<button class="dotpay-from-submit" type="submit">' . $data['button'] . '</button>';
         }
 
-        $form .= $formEnd . "\n";
+        $form .= $formEnd . PHP_EOL;
 
         return $form;
     }
@@ -199,7 +201,7 @@ final class LaravelDotpay
         $hash = hash('sha256', $this->config['PIN'] . $concatData);
         $signature = isset($data['signature']) ? $data['signature'] : null;
 
-        $result = isset($data['signature']) && ($hash === $signature);
+        $result = $signature && ($hash === $signature);
 
         if ($result) {
             $this->callSuccess($data);

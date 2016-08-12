@@ -52,7 +52,8 @@ DOTPAY_PIN=YOUR_DOTPAY_PIN
         'amount'            => 9999,
         'firstname'         => "CustomerName",
         'lastname'          => "CustomerSurname",
-        'email'             => "Customer@Email"
+        'email'             => "Customer@Email",
+        'button'            => "Pay Now",
     ];
     
     $form = Dotpay::createForm($data);
@@ -60,6 +61,49 @@ DOTPAY_PIN=YOUR_DOTPAY_PIN
     return view('dotpay.payment', [
         'form' => $form
     ]);
+```
+
+### In your view type something like ###
+```php
+    @if (isset($form) && $form)
+        {!! $form !!}
+    @endif
+```
+
+### Will be rendered ###
+
+```html
+    <form class="dotpay-form" action="https://ssl.dotpay.pl/test_payment/" method="POST">
+        <input type="hidden" name="id" value="XXXXX"/>
+        <input type="hidden" name="description" value="Description"/>
+        <input type="hidden" name="channel" value="73"/>
+        <input type="hidden" name="api_version" value="dev"/>
+        <input type="hidden" name="lang" value="pl"/>
+        <input type="hidden" name="control" value="SOME RANDOM STRING HERE - ORDER TOKEN ETC"/>
+        <input type="hidden" name="amount" value="9999"/>
+        <input type="hidden" name="type" value="4"/>
+        <input type="hidden" name="firstname" value="CustomerName"/>
+        <input type="hidden" name="lastname" value="CustomerSurname"/>
+        <input type="hidden" name="email" value="Customer@Email"/>
+        <input type="hidden" name="p_email" value="YOUR@EMAIL.COM"/>
+        <input type="hidden" name="p_info" value="TEST STORE"/>
+        <input type="hidden" name="URL" value="XXXX"/>  <!-- url generate from route named 'dotpay.success' -->
+        <input type="hidden" name="URLC" value="XXXXX"/> <!-- url generate from route named 'dotpay.notification' -->
+        <input type="hidden" name="bylaw" value="1"/>
+        <input type="hidden" name="personal_data" value="1"/>
+        <button class="dotpay-from-submit" type="submit">Pay Now</button>
+    </form>
+```
+
+### Create auto submitted form ###
+
+```js
+    <script type="text/javascript">
+        window.onload = function () {
+            var form = document.getElementsByClassName("dotpay-form")[0];
+            form.submit();
+        };
+    </script>
 ```
 
 ### Handle action for URLC notification ###
@@ -70,28 +114,33 @@ DOTPAY_PIN=YOUR_DOTPAY_PIN
         $data = $request->all();
         $ip = $request->getClientIp();
         
-        \Log::debug("DOTPAY REQUEST: {$ip}");
-
+        // additional callback when validation fails
         Dotpay::failed(function ($data) {
-            \Log::debug("DOTPAY FAILED");
-            \Log::debug("DATA" . json_encode($data, JSON_PRETTY_PRINT));
+            Log::debug("DOTPAY FAILED");
+            Log::debug("DATA" . json_encode($data, JSON_PRETTY_PRINT));
+            
+            // do some stuff when data verification fails (hash is invalid)
         });
 
+        // additional callback when validation passes
         Dotpay::success(function ($data) {
-            \Log::debug("DOTPAY SUCCESS");
-            \Log::debug("DATA" . json_encode($data, JSON_PRETTY_PRINT));
+            Log::debug("DOTPAY SUCCESS");
+            Log::debug("DATA" . json_encode($data, JSON_PRETTY_PRINT));
+            
+             // do some stuff when data verification passes
+             // compare amount, control field etc. 
         });
 
-        if (Dotpay::validateIP($ip)) {
-            \Log::debug("IP is VALID: {$ip}");
-        } else {
-            \Log::debug("IP is INVALID: {$ip}");
-        }
 
-        if (Dotpay::validate($data)) {
-            \Log::debug("success validation");
+        // validate request IP and hash
+        if (Dotpay::validateIP($ip)) {
+            if (Dotpay::validate($data)) {
+                Log::debug("Request is valid");
+            } else {
+                Log::debug("Request is invalid");
+            }  
         } else {
-            \Log::debug("failed validation");
+            Log::debug("Request IP is INVALID: {$ip}");
         }
 
         return "OK";
