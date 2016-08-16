@@ -40,6 +40,32 @@ DOTPAY_INFO="STORE INFO"
 DOTPAY_PIN=YOUR_DOTPAY_PIN
 ```
 
+Publish configuration file
+
+```shell
+php artisan vendor:publish
+```
+
+Set up settings in config/dotpay.php
+
+```php
+array(
+    //route name for success redirect
+    'success_url'=> 'dotpay.success',
+    
+    //route name for URLC notification
+    'notification_url' => 'dotpay.notification',
+    
+    //default test mode is enabled, available: dev, prod
+    'environment' => 'dev',
+    
+    //array of allowed IP, verified during URLC request
+    'allowed_servers' => [
+        '195.150.9.37'
+    ]
+);
+```
+
 ## Usage
 
 ### Create form in controller ###

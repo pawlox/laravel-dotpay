@@ -15,14 +15,14 @@ final class LaravelDotpay
     const PAYMENT_REDIRECT_TYPE = 4;
 
     /**
-     * @var \Closure
+     * @var \Closure[]
      */
-    private $successCallback;
+    private $successCallbacks;
 
     /**
-     * @var \Closure
+     * @var \Closure[]
      */
-    private $failedCallback;
+    private $failedCallbacks;
 
     /**
      * @var array
@@ -55,8 +55,8 @@ final class LaravelDotpay
         $this->config = $app['config']->get('dotpay');
         $this->allowed_servers = $this->config['allowed_servers'];
 
-        $this->successCallback = function () {};
-        $this->failedCallback = function () {};
+        $this->successCallbacks = array();
+        $this->failedCallbacks = array();
 
         $this->formUrl = $this->config['environment'] == 'dev' ?
             "https://ssl.dotpay.pl/test_payment/" : "https://ssl.dotpay.pl/t2/";
@@ -217,7 +217,7 @@ final class LaravelDotpay
      */
     public function success(\Closure $callback)
     {
-        $this->successCallback = $callback;
+        $this->successCallbacks[] = $callback;
     }
 
     /**
@@ -225,7 +225,7 @@ final class LaravelDotpay
      */
     public function failed(\Closure $callback)
     {
-        $this->failedCallback = $callback;
+        $this->failedCallbacks[] = $callback;
     }
 
     /**
@@ -234,8 +234,12 @@ final class LaravelDotpay
      */
     private function callSuccess($data)
     {
-        if ($this->successCallback instanceof \Closure) {
-            $this->successCallback->__invoke($data);
+        if (count($this->successCallbacks)) {
+            foreach($this->successCallbacks as $callback) {
+                if ($callback instanceof \Closure) {
+                    $callback($data);
+                }
+            }
         }
     }
 
@@ -245,8 +249,12 @@ final class LaravelDotpay
      */
     private function callFailed($data)
     {
-        if ($this->failedCallback instanceof \Closure) {
-            $this->failedCallback->__invoke($data);
+        if (count($this->failedCallbacks)) {
+            foreach($this->failedCallbacks as $callback) {
+                if ($callback instanceof \Closure) {
+                    $callback($data);
+                }
+            }
         }
     }
 }
