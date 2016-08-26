@@ -117,7 +117,6 @@ final class LaravelDotpay
             'control',
             'amount',
             'firstname',
-            'lastname',
             'email',
             'p_email',
             'p_info',
@@ -256,5 +255,15 @@ final class LaravelDotpay
                 }
             }
         }
+    }
+
+    /**
+     * Array of all allowed channels
+     *
+     * @return array
+     */
+    public function getChannels()
+    {
+        return include __DIR__ . "/lib/channels.php";
     }
 }
