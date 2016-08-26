@@ -117,6 +117,7 @@ final class LaravelDotpay
             'control',
             'amount',
             'firstname',
+            'lastname',
             'email',
             'p_email',
             'p_info',
