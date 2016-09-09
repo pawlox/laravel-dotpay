@@ -99,7 +99,6 @@ final class LaravelDotpay
             'firstname'         => isset($data['firstname']) ? $data['firstname'] : null,
             'lastname'          => isset($data['lastname']) ? $data['lastname'] : null,
             'email'             => isset($data['email']) ? $data['email'] : null,
-            'back_button_url'   => isset($data['back_button_url']) ? $data['back_button_url'] : null,
             'p_email'           => $this->config['seller_email'],
             'p_info'            => $this->config['seller_info'],
             'URL'               => $successUrl,
